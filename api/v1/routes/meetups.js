@@ -3,7 +3,7 @@ import {
 } from '../controllers/meetups';
 
 const routes = (app) => {
-  app.route('/meetups/upcoming')
+  app.route('/meetups/upcoming?version=v1')
     .get(upcoming);
 
   app.route('/meetups/:meetupId/rsvps')

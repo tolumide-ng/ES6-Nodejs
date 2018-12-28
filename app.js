@@ -1,9 +1,11 @@
 import express from 'express';
 import meetupRoutes from './api/v1/routes/meetups';
+import questionRoutes from './api/v1/routes/questions';
 
 const app = express();
 
 meetupRoutes(app);
+questionRoutes(app);
 
 
 app.use((req, res, next) => {

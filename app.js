@@ -6,11 +6,11 @@ const app = express();
 meetupRoutes(app);
 
 
-/* app.use((req, res, next) => {
+app.use((req, res, next) => {
   const error = new Error('Bad Request, Route not found');
   error.status = 400;
   next(error);
-}); */
+});
 
 app.use((error, req, res) => {
   res.status(error.statusCode || 500);

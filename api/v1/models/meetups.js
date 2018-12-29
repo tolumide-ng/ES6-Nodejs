@@ -31,6 +31,16 @@ class Meetup {
     const upcoming = this.meetups.filter(meetup => new Date(meetup.happeningOn) > new Date());
     return upcoming;
   }
+
+  delete(meetupId) {
+    // use getOne method to get the meetup
+    const delMeetup = this.meetups.getOne(meetupId);
+    // find index of delMeetup for use in splice
+    const index = this.meetups.indexOf(delMeetup);
+    // Now splice out!
+    this.meetups.splice(index, 1);
+    return {};
+  }
 }
 
 export default new Meetup();

@@ -1,22 +1,27 @@
-import {
-  upcoming, reply, allMeetups, specific, createMeetup,
-} from '../controllers/meetups';
+import meetups from '../controllers/meetups';
+
+/* {
+  createMeetup, findOne, findAll, allUpcomings, deleteMeetup,
+} */
 
 const routes = (app) => {
-  app.route('/meetups/upcoming?version=v1')
-    .get(upcoming);
+  app.route('/v1/meetups')
+    .get(meetups.findAll);
 
-  app.route('/meetups/:meetupId/rsvps')
-    .post(reply);
+  app.route('/v1/meetups')
+    .post(meetups.createMeetup);
 
-  app.route('/meetups')
-    .get(allMeetups);
+  app.route('/v1/meetups/:meetupId')
+    .get(meetups.findOne);
 
-  app.route('/meetups/:meetup-id')
-    .get(specific);
+  app.route('/v1/meetups/upcoming')
+    .get(meetups.allUpcomings);
 
-  app.route('/meetups')
-    .post(createMeetup);
+  /*   app.route('/v1/meetups/:meetupId/rsvps')
+    .post(reply); */
+
+  app.route('/v1/meetups/delete')
+    .get(meetups.deleteMeetup);
 };
 
 export default routes;

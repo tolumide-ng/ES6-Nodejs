@@ -1,11 +1,12 @@
 import meetupsModel from '../models/meetups';
 
 const Meetups = {
-  create(req, res) {
+  createMeetup(req, res) {
     // all the parameters below are required
-    if (!req.body.location && !req.body.topic && !req.body.happeningOn && !req.body.tags) {
+    if (!req.body.topic && !req.body.location && !req.body.happeningOn && !req.body.tags) {
       return res.status(400).json({
         message: 'All fields are required',
+        topic: req.body.topic,
       });
     }
     // call the create function from models, present req.body as argument i.e data
@@ -76,7 +77,7 @@ const Meetups = {
         message: 'Meetup not found',
       });
     }
-    return res.status(200).json({
+    return res.status(204).json({
       message: 'Meetup deleted',
     });
   },

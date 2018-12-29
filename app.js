@@ -1,8 +1,12 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import meetupRoutes from './api/v1/routes/meetups';
 import questionRoutes from './api/v1/routes/questions';
 
 const app = express();
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 meetupRoutes(app);
 questionRoutes(app);

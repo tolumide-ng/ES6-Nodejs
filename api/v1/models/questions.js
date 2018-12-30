@@ -6,16 +6,17 @@ class Questions {
     this.questions = [];
   }
 
-  askQuestion(meetupId) {
-    const theMeetup = meetupsModel.getOne(meetupId);
+  askQuestion(data) {
+    const theMeetup = meetupsModel.getOne(data.meetupId);
     const theQuestion = {
       questionId: Date.now(),
       createdOn: moment.now(),
-      createdBy: meetupId.createdBy, // Should be taken from User Model
+      createdBy: data.createdBy, // Should be taken from User Model
       meetup: theMeetup.meetup, // Taken from meetup Model
-      title: meetupId.title,
-      body: meetupId.body,
-      votes: meetupId.votes,
+      title: data.title,
+      body: data.body,
+      upVotes: data.upVotes,
+      downVotes: data.downVotes,
     };
     this.questions.push(theQuestion);
   }
@@ -24,23 +25,23 @@ class Questions {
     return this.questions.find(question => question.id === meetupId);
   }
 
-  upvote(meetupId) {
-    const theQuestion = this.getOne(meetupId);
+  upvote(questionId) {
+    const theQuestion = this.getOne(questionId);
     const index = this.questions.indexOf(theQuestion);
-    this.questions[index].votes += 1;
+    this.questions[index].upVotes += 1;
     return this.questions[index];
   }
 
-  downvote(meetupId) {
-    const theQuestion = this.getOne(meetupId);
+  downvote(questionId) {
+    const theQuestion = this.getOne(questionId);
     const index = this.questions.indexOf(theQuestion);
-    this.questions[index].votes += -1;
+    this.questions[index].downVotes += -1;
     return this.questions[index];
   }
 
   // delete a question formerly asked
-  delete(meetupId) {
-    const theQuestion = this.getOne(meetupId);
+  delete(questionId) {
+    const theQuestion = this.getOne(questionId);
     const index = this.questions.indexOf(theQuestion);
     this.questions.splice(index, 1);
     return {};

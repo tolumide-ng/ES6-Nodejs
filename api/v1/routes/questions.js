@@ -1,14 +1,17 @@
-import { createQuestion, upvote, downvote } from '../controllers/questions';
+import questionControllers from '../controllers/questions';
 
 const routes = (app) => {
-  app.route('/questions')
-    .post(createQuestion);
+  app.route('/v1/questions')
+    .post(questionControllers.createQuestion);
 
-  app.route('/questions/:questionId/upvote')
-    .patch(upvote);
+  app.route('/v1/questions/:questionId/upvote')
+    .patch(questionControllers.upvote);
 
-  app.route('./questions/:questionId/downvote')
-    .patch(downvote);
+  app.route('/v1/questions/:questionId/downvote')
+    .patch(questionControllers.downvote);
+
+  app.route('/v1/questions/:questionId/delete')
+    .delete(questionControllers.delete);
 };
 
 export default routes;

@@ -11,51 +11,64 @@ const Questions = {
     }
     const createdQuestion = questionsModel.askQuestion(req.body);
     return res.status(201).json({
-      user: createdQuestion.user, //! TO BE FETCHED LATER
+      user: createdQuestion.createdBy, //! TO BE FETCHED LATER
       meetupId: createdQuestion.meetupId,
+      questionId: createdQuestion.questionId,
       title: createdQuestion.title,
       body: createdQuestion.body,
+      upVotes: createdQuestion.upVotes,
+      downVotes: createdQuestion.downVotes,
+      Post: {
+        type: 'GET',
+        url: `http://localhost:3000/v1/meetups/${createdQuestion.meetupId}`,
+      },
+      upVote_Question: {
+        type: 'PATCH',
+        url: `http://localhost:3000/v1/questions/${createdQuestion.questionId}/upvote`,
+      },
+      downVote_Question: {
+        type: 'PATCH',
+        url: `http://localhost:3000/v1/questions/${createdQuestion.questionId}/downvote`,
+      },
     });
   },
 
   upvote(req, res) {
     // create an instance for when the user has already liked question
     /* SOMETHING LIKE IF USER.UPVOTE THEN OVERLOOK ELSE UPVOTE */
-    questionsModel.upvote(req.params.questionId);
-    const theQuestion = questionsModel.getOne(req.params.questionId);
-    res.status(204).json({
-      meetupId: theQuestion.meetupId,
-      title: theQuestion.title,
-      body: theQuestion.body,
-      upVotes: theQuestion.upVotes,
+    /* questionsModel.upvote(req.params.questionId); */
+    const theQuestion = questionsModel.upvote(req.params.questionId);
+    return res.status(200).json({
+      message: 'delaware',
+      upVotes: theQuestion,
     });
     /* CONDITION FOR AN ALREADY UPVOTED QUESTION */
   },
 
   downvote(req, res) {
-    questionsModel.downvote(req.params.questionId);
-    const theQuestion = questionsModel.getOne(req.params.questionId);
-    res.status(204).json({
-      meetupId: theQuestion.meetupId,
-      title: theQuestion.title,
-      body: theQuestion.body,
-      downVotes: theQuestion.downVotes,
-
+    // create an instance for when the user has already liked question
+    /* SOMETHING LIKE IF USER.UPVOTE THEN OVERLOOK ELSE UPVOTE */
+    /* questionsModel.upvote(req.params.questionId); */
+    const theQuestion = questionsModel.downvote(req.params.questionId);
+    return res.status(200).json({
+      message: 'delaware',
+      downVotes: theQuestion,
     });
+    /* CONDITION FOR AN ALREADY UPVOTED QUESTION */
   },
 
-  delete(req, res) {
-    const exists = questionsModel.getOne(req.params.questionId);
+  /* delete(req, res) {
+    const exists = questionsModel.find(question => question.questionId === questionId);
     if (!exists) {
       return res.status(404).json({
         message: 'Question not found',
       });
     }
     questionsModel.delete(req.params.questionId);
-    return res.status(204).json({
+    return res.status(200).json({
       message: 'Question deleted',
     });
-  },
+  }, */
 };
 
 export default Questions;

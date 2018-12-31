@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import meetupRoutes from './api/v1/routes/meetups';
 import questionRoutes from './api/v1/routes/questions';
+import userRoutes from './api/v1/routes/users';
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(bodyParser.json());
 
 meetupRoutes(app);
 questionRoutes(app);
+userRoutes(app);
 
 
 app.use((req, res, next) => {

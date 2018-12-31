@@ -35,8 +35,8 @@ class Questions {
 
   downvote(questionId) {
     const upvote = this.questions.find(question => question.questionId === questionId);
-    const downvoted = upvote.upVotes - 1;
-    return downvoted;
+    upvote.upVotes -= 1;
+    return upvote.upVotes;
   }
 
   forDel(questionId) {

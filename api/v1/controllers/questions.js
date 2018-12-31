@@ -57,18 +57,40 @@ const Questions = {
     /* CONDITION FOR AN ALREADY UPVOTED QUESTION */
   },
 
-  /* delete(req, res) {
-    const exists = questionsModel.find(question => question.questionId === questionId);
-    if (!exists) {
-      return res.status(404).json({
-        message: 'Question not found',
+  // get all questions for this meetup
+  getAllQuestion(req, res) {
+    const allquestions = questionsModel.getAll(req.params.meetupId);
+    return res.status(200).json({
+      data: allquestions.map(question => ({
+        createdBy: question.createdBy,
+        meetupId: question.meetupId,
+        title: question.title,
+        body: question.body,
+        upVotes: question.upVotes,
+        downVotes: question.downVotes,
+      })),
+    });
+  },
+
+  delete(req, res) {
+    const deleted = questionsModel.delete(req.params.questionId);
+    if (Array.isArray(deleted)) {
+      return res.status(202).json({
+        count: deleted.length,
+        data: deleted.map(undeleted => ({
+          createdBy: undeleted.createdBy,
+          meetupId: undeleted.meetupId,
+          title: undeleted.title,
+          body: undeleted.body,
+          upVotes: undeleted.upVotes,
+          downVotes: undeleted.downVotes,
+        })),
       });
     }
-    questionsModel.delete(req.params.questionId);
-    return res.status(200).json({
-      message: 'Question deleted',
+    return res.status(404).json({
+      message: 'Question not found',
     });
-  }, */
+  },
 };
 
 export default Questions;

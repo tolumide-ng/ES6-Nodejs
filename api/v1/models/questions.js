@@ -27,6 +27,10 @@ class Questions {
     return this.questions.find(question => question.meetupId === meetupId);
   }
 
+  getAll(meetupId) {
+    return this.questions.find(questions => questions.meetupId === meetupId);
+  }
+
   upvote(questionId) {
     const upvote = this.questions.find(question => question.questionId === questionId);
     upvote.upVotes += 1;
@@ -44,12 +48,15 @@ class Questions {
   }
 
   // delete a question formerly asked
-  /* delete(questionId) {
+  delete(questionId) {
     const theQuestion = this.forDel(questionId);
-    const index = this.questions.indexOf(theQuestion);
-    this.questions.splice(index, 1);
-    return {};
-  } */
+    if (theQuestion) {
+      const index = this.questions.indexOf(theQuestion);
+      this.questions.splice(index, 1);
+      return this.questions;
+    }
+    return 'Question doesn\'t exist';
+  }
 }
 
 export default new Questions();

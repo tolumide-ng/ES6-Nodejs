@@ -10,8 +10,8 @@ const routes = (app) => {
   app.route('/v1/questions/:questionId/downvote')
     .patch(questionControllers.downvote);
 
-  /* app.route('/v1/questions/:questionId/delete')
-    .delete(questionControllers.delete); */
+  app.route('/v1/questions/:questionId/delete')
+    .delete(questionControllers.delete);
 };
 
 export default routes;

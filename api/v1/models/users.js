@@ -44,7 +44,7 @@ class User {
 
   deleteUser(userId) {
     const theUser = this.findUser(userId);
-    const index = this.users.findIndex(theUser);
+    const index = this.users.IndexOf(theUser);
     this.users.splice(index, 1);
   }
 

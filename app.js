@@ -6,7 +6,7 @@ import userRoutes from './api/v1/routes/users';
 
 const app = express();
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 meetupRoutes(app);

@@ -25,7 +25,7 @@ const User = {
         firstName: available.firstName,
         lastName: available.lastName,
         email: available.email,
-        phoneNumber: available.email,
+        phoneNumber: available.phoneNumber,
       });
     }
     return res.status(401).json({
@@ -39,7 +39,7 @@ const User = {
       firstName: info.firstName,
       lastName: info.lastName,
       email: info.email,
-      phoneNumber: info.email,
+      phoneNumber: info.phoneNumber,
       questions: info.qestion.length || '',
       comments: info.comments.length || '',
     });

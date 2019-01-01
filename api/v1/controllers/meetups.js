@@ -1,18 +1,23 @@
-import meetupsModel from '../models/meetups';
+import meetupModel from '../models/meetups';
 
 const Meetups = {
   createMeetup(req, res) {
     // all the parameters below are required
-    if (!req.body.topic && !req.body.location && !req.body.happeningOn && !req.body.tags) {
-      return res.status(400).json({
+    // The OR condition checks if the date is past and rejects
+    const data = req.body;
+    const dateHappening = (new Date(data.happeningOn) < new Date());
+    if (!data.topic && !data.location && !data.tags
+      && !data.happeningOn && dateHappening) {
+      return res.status(204).json({
         message: 'All fields are required',
         topic: req.body.topic,
       });
     }
-    // call the create function from models, present req.body as argument i.e data
-    const createdMeetup = meetupsModel.create(req.body);
+
+    // call the create function from models, present req.body as argument
+    const createdMeetup = meetupModel.create(data);
     return res.status(201).json({
-      // values to be rendered
+      // render the following values
       topic: createdMeetup.topic,
       location: createdMeetup.location,
       happeningOn: createdMeetup.happeningOn,
@@ -23,15 +28,14 @@ const Meetups = {
 
   findOne(req, res) {
     const params = req.params.meetupId;
-    const theMeetup = meetupsModel.getOne(params);
-    // null would return true if used as if decisor
+    const theMeetup = meetupModel.getOne(params);
     if (!theMeetup) {
       return res.status(404).json({
-        message: 'Meetup not found',
+        message: 'Meetup Not Found',
       });
     }
     return res.status(200).json({
-      meetupId: theMeetup.meetupId,
+      meetup: theMeetup.meetupId,
       createdOn: theMeetup.createdOn,
       topic: theMeetup.topic,
       location: theMeetup.location,
@@ -41,24 +45,32 @@ const Meetups = {
   },
 
   findAll(req, res) {
-    const allMeetups = meetupsModel.getAll();
-    res.status(200).json({
-      count: allMeetups.length,
-      data: allMeetups.map(meetup => ({
-        meetupId: meetup.meetupId,
-        topic: meetup.topic,
-        location: meetup.location,
-        happeningOn: meetup.happeningOn,
-        tags: meetup.tags,
-      })),
+    const allMeetups = meetupModel.getAll();
+    const count = allMeetups.length;
+    // check if there are meetups at all
+    if (count) {
+      res.status(200).json({
+        Meetups: count,
+        data: allMeetups.map(meetup => ({
+          meetup: meetup.meetupId,
+          topic: meetup.topic,
+          location: meetup.location,
+          happeningOn: meetup.happeningOn,
+          tags: meetup.tags,
+        })),
+      });
+    }
+    res.status(204).json({
+      message: 'No content',
     });
   },
 
   allUpcomings(req, res) {
-    const upcomingMeetups = meetupsModel.upcomings();
-    if (upcomingMeetups === 0) {
-      return res.status(200).json({
-        message: 'No upcoming meetups',
+    const upcomingMeetups = meetupModel.upcomings();
+    const theLength = upcomingMeetups.length;
+    if (theLength === 0) {
+      return res.status(204).json({
+        message: 'No upcoming meetup',
       });
     }
     return res.status(200).json({
@@ -75,15 +87,51 @@ const Meetups = {
 
   deleteMeetup(req, res) {
     // Is this a real meetup?
-    const confirm = meetupsModel.getOne(req.params.meetupId);
+    const confirm = meetupModel.getOne(req.body.meetupId);
     if (confirm) {
-      meetupsModel.delete(req.params.meetupId);
+      meetupModel.delete(req.body.meetupId);
       res.status(204).json({
         message: 'Deleted',
       });
     }
     res.status(404).json({
-      message: 'Meetup not found',
+      message: 'Meedtup not found',
+    });
+  },
+
+  // NEW HERE
+  edit(req, res) {
+    const confirm = meetupModel.getOne(req.body.meetupId);/*
+    const toEdit = meetupModel.edit(req.params.meetupId); */
+    if (!confirm) {
+      return res.status(404).json({
+        message: 'Meetup not found',
+      });
+    }
+    meetupModel.edit(req.body);
+    return res.status(200).json({
+      message: 'Update successful!',
+    });
+  },
+
+  // NEW HERE
+  findAttending(req, res) {
+    // FIRST CONFIRM IF MEETUP EXIST IN MEETUPS
+    // CONFIRM IF MEETUPS EXIST IN ATTENDING
+    // RETURN LENGTH AND USERID (SINCE QUERY WOULD BE BY MEETUP)
+    const meetupExist = meetupModel.getOne(req.params.meetupId);
+    const confirm = meetupModel.attending.find(meetup => meetup.meetupId === req.params.meetupId);
+    if (!meetupExist || !confirm) {
+      return res.status(404).json({
+        message: 'Meetup does not exist',
+      });
+    }
+    return res.status(200).json({
+      count: confirm.length,
+      data: confirm.map(people => ({
+        meetupId: people.meetupId,
+        userId: people.userId,
+      })),
     });
   },
 };

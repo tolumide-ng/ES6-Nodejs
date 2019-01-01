@@ -13,11 +13,14 @@ const routes = (app) => {
   app.route('/v1/meetups/:meetupId')
     .get(meetups.findOne);
 
+  app.route('/v1/meetups/edit')
+    .patch(meetups.edit);
+    
+  app.route('/v1/meetups/delete')
+    .delete(meetups.deleteMeetup);
+
   /*   app.route('/v1/meetups/:meetupId/rsvps')
     .post(reply); */
-
-  app.route('/v1/meetups/delete/:meetupId')
-    .delete(meetups.deleteMeetup);
 };
 
 export default routes;

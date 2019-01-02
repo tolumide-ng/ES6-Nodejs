@@ -69,8 +69,8 @@ const Questions = {
   getAllQuestions(req, res) {
     const data = req.params.meetupId;
     const allquestions = questionsModels.getMeetupQuestions(data);
-    const count = allquestions.length; 
-    if(count > 0){
+    const count = allquestions.length;
+    if (count > 0) {
       return res.status(200).json({
         data: allquestions.map(question => ({
           createdBy: question.createdBy,
@@ -83,8 +83,8 @@ const Questions = {
       });
     }
     return res.status(204).json({
-      message: 'No content'
-    })
+      message: 'No content',
+    });
   },
 
   delete(req, res) {

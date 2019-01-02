@@ -119,6 +119,7 @@ const Meetups = {
     // FIRST CONFIRM IF MEETUP EXIST IN MEETUPS
     // CONFIRM IF MEETUPS EXIST IN ATTENDING
     // RETURN LENGTH AND USERID (SINCE QUERY WOULD BE BY MEETUP)
+    
     const meetupExist = meetupModel.getOne(req.params.meetupId);
     const confirm = meetupModel.attending.find(meetup => meetup.meetupId === req.params.meetupId);
     if (!meetupExist || !confirm) {

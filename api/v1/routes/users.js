@@ -1,14 +1,15 @@
-import users from '../models/users';
+import users from '../controllers/users';
 
 const routes = (app) => {
-  app.route('/v1/singup')
-    .post(users.signup);
+  app.route('/v1/users/profile')
+    .get(users.userInfo);
 
-  app.route('/v1/login')
+  app.route('/v1/users/signup')
+    .post(users.signUp);
+
+  app.route('/v1/users/login')
     .post(users.login);
 
-  app.route('/v1/user')
-    .post(users.findUser);
 };
 
 export default routes;

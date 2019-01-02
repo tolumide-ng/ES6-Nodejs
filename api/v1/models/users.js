@@ -1,3 +1,4 @@
+import meetupModel from '../models/meetups';
 import moment from 'moment';
 import uuid from 'uuid';
 
@@ -25,6 +26,31 @@ class User {
     return newUser;
   }
 
+  //NEW RSVP
+  attendMeetup(data) {
+    const confirmUser = this.findUser(data.userId);
+    const confirmUserAttending = meetupModel.attending.find(user => user.userId === data.userId);
+    if(confirmUser && !confirmUserAttending) {
+      const attendee = {
+        userId: data.userId,
+        meetupId: data.meetupId
+      };
+      meetupModel.attending.push(attendee);
+    }
+  }
+
+  //new RSVP UNATTEND
+  unAttendMeetup(data) {
+    const confirmUser = this.findUser(data.userId);
+    const confirmUserAttending = meetupModel.attending.find(user => user.userId === data.userId);
+    if(confirmUser === confirmUserAttending) {
+      const index = meetupModel.attending.indexOf(confirmUserAttending);
+      meetupModel.attending.splice(index, 1);
+      return 'Meetup removed from attending'
+    }
+    return 'You were not attending this event before'
+  }
+
   findUser(userId) {
     return this.users.find(user => user.userId === userId);
   }
@@ -33,12 +59,20 @@ class User {
     return this.users.find(user => user.email === email);
   }
 
-  login(data) {
+ /* login(data) {
     const theUser = this.confirm(data.email);
     if (theUser.email === data.email && theUser.password === data.password) {
       return theUser;
     }
     return 'Not Found';
+  }*/
+
+  login(password) {
+    const confirmPassword = this.users.find(user => user.password === password);
+    if(confirmPassword){
+      return confirmPassword;
+    }
+    return 0;
   }
 
   deleteUser(userId) {

@@ -1,23 +1,26 @@
-import questionsModel from '../models/questions';
+import questionsModels from '../models/questions';
 
 const Questions = {
 
   createQuestion(req, res) {
-    /* const exist = questionsModel.getOne(req.body.meetupId) */
-    if (!req.body.title && !req.body.body) {
+    const data = req.body;
+    if (!data.title && !data.body
+      && !data.meetupId && !data.user
+      && !data.questionId && !data.upVotes
+      && !data.downVotes) {
       return res.status(400).json({
         message: 'All fields are required',
       });
     }
-    const createdQuestion = questionsModel.askQuestion(req.body);
+    const createdQuestion = questionsModels.askQuestion(req.body);
     return res.status(201).json({
-      user: createdQuestion.createdBy, //! TO BE FETCHED LATER
+      createdBy: createdQuestion.createdBy,
       meetupId: createdQuestion.meetupId,
       questionId: createdQuestion.questionId,
-      title: createdQuestion.title,
       body: createdQuestion.body,
-      upVotes: createdQuestion.upVotes,
-      downVotes: createdQuestion.downVotes,
+      title: createdQuestion.title,
+      upvote: createdQuestion.upvote,
+      downvote: createdQuestion.downvote,
       Post: {
         type: 'GET',
         url: `http://localhost:3000/v1/meetups/${createdQuestion.meetupId}`,
@@ -34,46 +37,58 @@ const Questions = {
   },
 
   upvote(req, res) {
-    // create an instance for when the user has already liked question
-    /* SOMETHING LIKE IF USER.UPVOTE THEN OVERLOOK ELSE UPVOTE */
-    /* questionsModel.upvote(req.params.questionId); */
-    const theQuestion = questionsModel.upvote(req.params.questionId);
-    return res.status(200).json({
-      message: 'delaware',
-      upVotes: theQuestion,
+    // smile we solved this part on the models part
+    const theQuestion = questionsModels.requestUpvote(req.body);
+    if (theQuestion) {
+      return res.status(200).json({
+        message: 'delaware',
+        downvotes: theQuestion.downvote,
+        upvotes: theQuestion.upvote,
+      });
+    }
+    return res.status(404).json({
+      message: 'Not found',
     });
-    /* CONDITION FOR AN ALREADY UPVOTED QUESTION */
   },
 
   downvote(req, res) {
-    // create an instance for when the user has already liked question
-    /* SOMETHING LIKE IF USER.UPVOTE THEN OVERLOOK ELSE UPVOTE */
-    /* questionsModel.upvote(req.params.questionId); */
-    const theQuestion = questionsModel.downvote(req.params.questionId);
-    return res.status(200).json({
-      message: 'delaware',
-      downVotes: theQuestion,
+    // smile we solved this part on the models part
+    const theQuestion = questionsModels.requestDownvote(req.body);
+    if (theQuestion) {
+      return res.status(200).json({
+        message: 'delaware',
+        downvotes: theQuestion.downvote,
+        upvotes: theQuestion.upvote,
+      });
+    }
+    return res.status(404).json({
+      message: 'Not found',
     });
-    /* CONDITION FOR AN ALREADY UPVOTED QUESTION */
   },
 
-  // get all questions for this meetup
-  getAllQuestion(req, res) {
-    const allquestions = questionsModel.getAll(req.params.meetupId);
-    return res.status(200).json({
-      data: allquestions.map(question => ({
-        createdBy: question.createdBy,
-        meetupId: question.meetupId,
-        title: question.title,
-        body: question.body,
-        upVotes: question.upVotes,
-        downVotes: question.downVotes,
-      })),
-    });
+  getAllQuestions(req, res) {
+    const data = req.params.meetupId;
+    const allquestions = questionsModels.getMeetupQuestions(data);
+    const count = allquestions.length; 
+    if(count > 0){
+      return res.status(200).json({
+        data: allquestions.map(question => ({
+          createdBy: question.createdBy,
+          meetupId: question.meetupId,
+          title: question.title,
+          body: question.body,
+          upvotes: question.upvotes,
+          downvotes: question.downvotes,
+        })),
+      });
+    }
+    return res.status(204).json({
+      message: 'No content'
+    })
   },
 
   delete(req, res) {
-    const deleted = questionsModel.delete(req.params.questionId);
+    const deleted = questionsModels.delete(req.params.questionId);
     if (Array.isArray(deleted)) {
       return res.status(202).json({
         count: deleted.length,
@@ -82,8 +97,8 @@ const Questions = {
           meetupId: undeleted.meetupId,
           title: undeleted.title,
           body: undeleted.body,
-          upVotes: undeleted.upVotes,
-          downVotes: undeleted.downVotes,
+          upvotes: undeleted.upvotes,
+          downvotes: undeleted.downvotes,
         })),
       });
     }

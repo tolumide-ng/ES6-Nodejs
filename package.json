@@ -4,7 +4,9 @@
   "description": "A RESTful Nodejs app built on es6",
   "main": "server.js",
   "scripts": {
-    "test": "mocha --require babel-register tests/users.js ./server.js",
+    "test1": "mocha --require babel-register tests/questions.js ./server.js",
+    "test2": "mocha --require babel-register tests/users.js ./server.js",
+    "test3": "mocha --require babel-register tests/meetups.js ./server.js",
     "start": "nodemon bin/dev"
   },
   "repository": {
